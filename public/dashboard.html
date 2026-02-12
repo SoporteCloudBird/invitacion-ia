@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Dashboard de Invitados - Heidy Anahí</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&amp;family=Great+Vibes&amp;family=Montserrat:wght@300;400;600&amp;family=Playfair+Display:ital,wght@0,400;0,700;1,400&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+
+    <!-- Export Libraries -->
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#B4944A",
+                        royal: "#0F1B4C",
+                        "background-light": "#F8F9FA",
+                    },
+                    fontFamily: {
+                        display: ["Cinzel Decorative", "serif"],
+                        script: ["Great Vibes", "cursive"],
+                        serif: ["Playfair Display", "serif"],
+                        sans: ["Montserrat", "sans-serif"],
+                    },
+                },
+            },
+        };
+    </script>
+    <style type="text/tailwindcss">
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light min-h-screen font-sans text-slate-800">
+
+    <!-- Header -->
+    <header class="bg-royal text-white shadow-xl relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10 pointer-events-none">
+            <!-- Pattern placeholder -->
+        </div>
+        <div
+            class="container mx-auto px-6 py-8 relative z-10 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-center md:text-left">
+                <h1 class="font-display text-2xl md:text-3xl text-primary mb-1">Panel de Control</h1>
+                <p class="font-script text-2xl opacity-90">Heidy Anahí's XV Years</p>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <div class="flex gap-4 bg-white/10 p-1 rounded-xl">
+                <button onclick="switchTab('guests')" id="tab-guests"
+                    class="flex items-center gap-2 px-6 py-2 rounded-lg font-semibold transition-all bg-primary text-white shadow-md">
+                    <span class="material-symbols-outlined text-sm">groups</span> Invitados
+                </button>
+                <button onclick="switchTab('settings')" id="tab-settings"
+                    class="flex items-center gap-2 px-6 py-2 rounded-lg font-semibold transition-all hover:bg-white/10 text-white/80">
+                    <span class="material-symbols-outlined text-sm">settings</span> Configuración
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 -mt-8 pb-20 relative z-20">
+
+        <!-- GUESTS TAB -->
+        <div id="view-guests" class="space-y-8">
+            <!-- Stats Cards -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-6 rounded-2xl shadow-lg border-l-4 border-primary">
+                    <div class="flex items-center justify-between mb-2">
+                        <span
+                            class="text-slate-500 text-sm font-semibold uppercase tracking-wider">Confirmaciones</span>
+                        <span class="material-symbols-outlined text-primary">groups</span>
+                    </div>
+                    <div class="flex items-baseline gap-2">
+                        <span class="text-3xl font-display text-royal" id="totalConfirmed">0</span>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-lg border-l-4 border-royal">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-slate-500 text-sm font-semibold uppercase tracking-wider">Total
+                            Personas</span>
+                        <span class="material-symbols-outlined text-royal">person</span>
+                    </div>
+                    <div class="flex items-baseline gap-2">
+                        <span class="text-3xl font-display text-royal" id="totalGuestCount">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Toolbar -->
+            <div
+                class="flex flex-wrap justify-between items-center gap-4 bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                <div class="relative w-full md:w-auto">
+                    <span
+                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                    <input id="searchInput"
+                        class="pl-10 pr-4 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-primary w-full md:w-64 transition-all"
+                        placeholder="Buscar invitado..." type="text" />
+                </div>
+                <div class="flex gap-2 w-full md:w-auto">
+                    <button onclick="exportPDF()"
+                        class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-lg font-semibold transition-all shadow-sm text-sm">
+                        <span class="material-symbols-outlined text-sm">picture_as_pdf</span> PDF
+                    </button>
+                    <button onclick="exportExcel()"
+                        class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg font-semibold transition-all shadow-sm text-sm">
+                        <span class="material-symbols-outlined text-sm">table_view</span> Excel
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse" id="guestTable">
+                        <thead>
+                            <tr class="bg-slate-50/50">
+                                <th class="px-6 py-4 font-semibold text-slate-600 border-b border-slate-100">Nombre</th>
+                                <th class="px-6 py-4 font-semibold text-slate-600 border-b border-slate-100">Invitados
+                                </th>
+                                <th class="px-6 py-4 font-semibold text-slate-600 border-b border-slate-100">Mensaje
+                                </th>
+                                <th class="px-6 py-4 font-semibold text-slate-600 border-b border-slate-100">Fecha</th>
+                                <th class="px-6 py-4 font-semibold text-slate-600 border-b border-slate-100 text-right">
+                                    Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-50" id="guestTableBody">
+                            <!-- Rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- SETTINGS TAB -->
+        <div id="view-settings" class="hidden bg-white rounded-3xl shadow-xl p-8 border border-slate-100">
+            <h2 class="font-display text-2xl mb-6 text-royal border-b pb-4 flex items-center gap-2">
+                <span class="material-symbols-outlined">settings</span> Configuración del Evento
+            </h2>
+
+            <form id="configForm" class="grid md:grid-cols-2 gap-8">
+                <!-- Event Info -->
+                <div class="space-y-4">
+                    <h3 class="font-bold text-primary text-lg flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">info</span> Información General
+                    </h3>
+                    <div>
+                        <label class="block text-sm text-slate-500 mb-1">Título Principal</label>
+                        <input name="mainTitle"
+                            class="w-full rounded-lg border-slate-300 focus:ring-primary focus:border-primary"
+                            type="text" placeholder="XV Años">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-slate-500 mb-1">Nombre Festejada</label>
+                        <input name="name"
+                            class="w-full rounded-lg border-slate-300 focus:ring-primary focus:border-primary"
+                            type="text" placeholder="Heidy Anahí">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-slate-500 mb-1">Apellidos Festejada</label>
+                        <input name="lastName"
+                            class="w-full rounded-lg border-slate-300 focus:ring-primary focus:border-primary"
+                            type="text" placeholder="López Guzmán">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-slate-500 mb-1">Fecha</label>
+                        <input name="date"
+                            class="w-full rounded-lg border-slate-300 focus:ring-primary focus:border-primary"
+                            type="date">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-slate-500 mb-1">Hora</label>
+                        <input name="time"
+                            class="w-full rounded-lg border-slate-300 focus:ring-primary focus:border-primary"
+                            type="time">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-slate-500 mb-1">Código de Vestimenta</label>
+                        <input name="dressCode"
+                            class="w-full rounded-lg border-slate-300 focus:ring-primary focus:border-primary"
+                            type="text">
+                    </div>
+                </div>
+
+                <!-- Locations -->
+                <div class="space-y-4">
+                    <h3 class="font-bold text-primary text-lg flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">map</span> Ubicaciones
+                    </h3>
+                    <div>
+                        <label class="block text-sm text-slate-500 mb-1">Iglesia / Misa</label>
+                        <input name="massLocation"
+                            class="w-full rounded-lg border-slate-300 focus:ring-primary focus:border-primary"
+                            type="text" placeholder="Nombre del lugar">
+                        <input name="massAddress"
+                            class="w-full mt-2 rounded-lg border-slate-300 focus:ring-primary focus:border-primary text-sm"
+                            type="text" placeholder="Dirección">
+                    </div>
+                    <div>
+                        <label class="block text-sm text-slate-500 mb-1">Recepción</label>
+                        <input name="receptionLocation"
+                            class="w-full rounded-lg border-slate-300 focus:ring-primary focus:border-primary"
+                            type="text" placeholder="Nombre del lugar">
+                        <input name="receptionAddress"
+                            class="w-full mt-2 rounded-lg border-slate-300 focus:ring-primary focus:border-primary text-sm"
+                            type="text" placeholder="Dirección">
+                    </div>
+                </div>
+
+                <div class="md:col-span-2 pt-6 border-t flex justify-end">
+                    <button type="submit"
+                        class="bg-primary text-white px-8 py-3 rounded-lg hover:bg-yellow-600 transition-all font-bold shadow-lg flex items-center gap-2">
+                        <span class="material-symbols-outlined">save</span> Guardar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    </main>
+
+    <!-- Edit Modal -->
+    <div id="editModal"
+        class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl">
+            <h3 class="font-display text-xl mb-4 flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">edit_note</span> Editar Invitado
+            </h3>
+            <form id="editForm" class="space-y-4">
+                <input type="hidden" name="id">
+                <div>
+                    <label class="block text-sm text-slate-500 mb-1">Nombre</label>
+                    <input name="name"
+                        class="w-full rounded-lg border-slate-300 focus:ring-primary focus:border-primary" type="text">
+                </div>
+                <div>
+                    <label class="block text-sm text-slate-500 mb-1">Invitados</label>
+                    <select name="guests"
+                        class="w-full rounded-lg border-slate-300 focus:ring-primary focus:border-primary">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4+</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm text-slate-500 mb-1">Mensaje</label>
+                    <textarea name="message"
+                        class="w-full rounded-lg border-slate-300 focus:ring-primary focus:border-primary"
+                        rows="3"></textarea>
+                </div>
+                <div class="flex justify-end gap-2 mt-6">
+                    <button type="button" onclick="closeModal()"
+                        class="px-4 py-2 text-slate-500 hover:bg-slate-100 rounded-lg font-medium">Cancelar</button>
+                    <button type="submit"
+                        class="px-4 py-2 bg-primary text-white rounded-lg flex items-center gap-2 font-medium">
+                        <span class="material-symbols-outlined text-sm">save</span> Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // --- TABS LOGIC ---
+        function switchTab(tab) {
+            document.getElementById('view-guests').classList.add('hidden');
+            document.getElementById('view-settings').classList.add('hidden');
+            document.getElementById('tab-guests').classList.remove('bg-primary', 'text-white', 'shadow-md');
+            document.getElementById('tab-settings').classList.remove('bg-primary', 'text-white', 'shadow-md');
+            document.getElementById('tab-guests').classList.add('text-white/80', 'hover:bg-white/10');
+            document.getElementById('tab-settings').classList.add('text-white/80', 'hover:bg-white/10');
+
+            document.getElementById('view-' + tab).classList.remove('hidden');
+            const activeBtn = document.getElementById('tab-' + tab);
+            activeBtn.classList.remove('text-white/80', 'hover:bg-white/10');
+            activeBtn.classList.add('bg-primary', 'text-white', 'shadow-md');
+        }
+
+        // --- GUESTS LOGIC ---
+        let allGuests = [];
+
+        async function loadGuests() {
+            try {
+                const res = await fetch('/api/guests');
+                allGuests = await res.json();
+                renderGuests(allGuests);
+            } catch (e) { console.error("Error loading guests", e); }
+        }
+
+        function renderGuests(guests) {
+            const tbody = document.getElementById('guestTableBody');
+            tbody.innerHTML = '';
+
+            let totalConfirmed = 0;
+            let totalPeople = 0;
+
+            guests.forEach(g => {
+                totalConfirmed++;
+                totalPeople += parseInt(g.guests) || 1;
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50/80 transition-colors border-b border-slate-50";
+                // Use g.id directly
+                tr.innerHTML = `
+                <td class="px-6 py-4 font-medium text-royal">${g.name}</td>
+                <td class="px-6 py-4 text-slate-600">${g.guests}</td>
+                <td class="px-6 py-4 text-slate-500 text-sm truncate max-w-xs">${g.message || '-'}</td>
+                <td class="px-6 py-4 text-slate-500 text-sm">${g.timestamp ? new Date(g.timestamp).toLocaleDateString() : 'N/A'}</td>
+                <td class="px-6 py-4 text-right flex justify-end gap-2">
+                    <button onclick='openEditModal("${g.id}")' class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Editar">
+                        <span class="material-symbols-outlined text-lg">edit</span>
+                    </button>
+                    <button onclick='deleteGuest("${g.id}")' class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Eliminar">
+                        <span class="material-symbols-outlined text-lg">delete</span>
+                    </button>
+                </td>
+            `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('totalConfirmed').innerText = totalConfirmed;
+            document.getElementById('totalGuestCount').innerText = totalPeople;
+        }
+
+        // --- SEARCH ---
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = allGuests.filter(g => g.name.toLowerCase().includes(term));
+            renderGuests(filtered);
+        });
+
+        // --- EDIT / DELETE ACTIONS ---
+        async function deleteGuest(id) {
+            if (!confirm('¿Estás seguro de eliminar este registro?')) return;
+            try {
+                const res = await fetch('/api/guests/' + id, { method: 'DELETE' });
+                if (res.ok) {
+                    // Remove locally instantly for better UX
+                    allGuests = allGuests.filter(g => g.id !== id);
+                    renderGuests(allGuests);
+                    // Also reload to be sure
+                    loadGuests();
+                } else {
+                    alert('No se pudo eliminar el registro.');
+                }
+            } catch (e) { alert('Error al eliminar'); }
+        }
+
+        function openEditModal(id) {
+            const guest = allGuests.find(g => g.id === id);
+            if (!guest) return;
+
+            const form = document.getElementById('editForm');
+            form.id.value = guest.id; // Correctly sets hidden ID
+            form.name.value = guest.name;
+            form.guests.value = guest.guests;
+            form.message.value = guest.message || '';
+
+            document.getElementById('editModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('editModal').classList.add('hidden');
+            document.getElementById('editForm').reset();
+        }
+
+        document.getElementById('editForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const res = await fetch('/api/guests', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if (res.ok) {
+                    closeModal();
+                    loadGuests();
+                } else {
+                    alert('Error al guardar cambios.');
+                }
+            } catch (e) { alert('Error al guardar'); }
+        });
+
+
+        // --- CONFIG LOGIC ---
+        async function loadConfig() {
+            try {
+                const res = await fetch('/api/config');
+                const config = await res.json();
+                const form = document.getElementById('configForm');
+
+                // Populate form
+                Object.keys(config).forEach(key => {
+                    if (form[key]) form[key].value = config[key];
+                });
+            } catch (e) { console.error("Error loading config", e); }
+        }
+
+        document.getElementById('configForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const res = await fetch('/api/config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if (res.ok) {
+                    alert('Configuración guardada correctamente.');
+                } else {
+                    alert('Hubo un error al guardar.');
+                }
+            } catch (e) { alert('Error al guardar configuración'); }
+        });
+
+
+        // --- EXPORT LOGIC ---
+        function exportExcel() {
+            const ws = XLSX.utils.json_to_sheet(allGuests);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Invitados");
+            XLSX.writeFile(wb, "invitados_xv.xlsx");
+        }
+
+        function exportPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            doc.text("Lista de Invitados - XV Años", 14, 20);
+
+            const tableColumn = ["Nombre", "Invitados", "Mensaje", "Fecha"];
+            const tableRows = [];
+
+            allGuests.forEach(g => {
+                const guestData = [
+                    g.name,
+                    g.guests,
+                    g.message,
+                    new Date(g.timestamp).toLocaleDateString()
+                ];
+                tableRows.push(guestData);
+            });
+
+            doc.autoTable({
+                head: [tableColumn],
+                body: tableRows,
+                startY: 30,
+            });
+
+            doc.save("invitados_xv.pdf");
+        }
+
+        // --- INIT ---
+        loadGuests();
+        loadConfig();
+        setInterval(loadGuests, 10000); // Auto refresh
+
+    </script>
+
+</body>
+
+</html>

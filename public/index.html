@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>XV Años - Heidy Anahí López Guzmán</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&amp;family=Great+Vibes&amp;family=Montserrat:wght@300;400;600&amp;family=Playfair+Display:ital,wght@0,400;0,700;1,400&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#B4944A", // Elegant Gold
+                        royal: "#0F1B4C",   // Deep Royal Blue
+                        "gold-accent": "#D4AF37",
+                        "background-light": "#FAFAFA",
+                        "background-dark": "#050816",
+                    },
+                    fontFamily: {
+                        display: ["Cinzel Decorative", "serif"],
+                        script: ["Great Vibes", "cursive"],
+                        serif: ["Playfair Display", "serif"],
+                        sans: ["Montserrat", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.5rem",
+                        'xl': '1rem',
+                        '2xl': '1.5rem',
+                        '3xl': '2rem',
+                    },
+                },
+            },
+        };
+    </script>
+    <style type="text/tailwindcss">
+        :root {
+            --primary-gold: #B4944A;
+            --royal-blue: #0F1B4C;
+        }
+        .hero-overlay {
+            background: linear-gradient(to bottom, rgba(15, 27, 76, 0.45), rgba(5, 8, 22, 0.9));
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05); /* Original transparency for hero/dark backgrounds */
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(180, 148, 74, 0.3);
+            color: white; /* Default text color within glass on dark backgrounds */
+        }
+        /* Specific glass card style for light sections to ensure readability */
+        .light-section .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(180, 148, 74, 0.2);
+            color: #1e293b; /* slate-800 for readability on light backgrounds */
+        }
+        
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        .sparkle-text {
+            text-shadow: 0 0 10px rgba(180, 148, 74, 0.5), 0 0 20px rgba(180, 148, 74, 0.3);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .sepia-bg {
+            filter: brightness(0.6) contrast(1.1) saturate(0.8);
+        }
+        
+        /* Envelope Animation */
+        .envelope-container { perspective: 1000px; }
+        .envelope {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            background: #f1f5f9;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            transform-style: preserve-3d;
+            transition: transform 1s;
+        }
+        .flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            clip-path: polygon(0 0, 50% 50%, 100% 0);
+            background: #e2e8f0;
+            transform-origin: top;
+            transition: transform 0.6s 0.2s ease-in-out;
+            z-index: 20;
+        }
+        .envelope.open .flap {
+            transform: rotateX(180deg);
+            z-index: 0;
+        }
+        .letter {
+            position: absolute;
+            inset: 10px;
+            background: white;
+            z-index: 10;
+            transform: translateY(0);
+            transition: transform 0.8s 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+        }
+        .envelope.open .letter {
+            transform: translateY(-100px);
+            z-index: 30;
+        }
+        .seal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: #B4944A;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 25;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        .seal:hover { transform: translate(-50%, -50%) scale(1.1); }
+        .envelope.open .seal {
+            opacity: 0;
+            pointer-events: none;
+            transform: translate(-50%, -50%) scale(0);
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-100 font-sans selection:bg-primary selection:text-white overflow-hidden"
+    id="body-content">
+
+    <!-- Intro Loader -->
+    <div id="intro-loader"
+        class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black transition-opacity duration-1000">
+        <!-- Video Layer (Hidden initially) -->
+        <video id="introVideo" playsinline
+            class="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000">
+            <source src="video_background.mp4" type="video/mp4">
+        </video>
+
+        <div class="relative z-10 flex flex-col items-center transition-all duration-500" id="envelope-wrapper">
+            <div class="envelope-container scale-75 md:scale-100 mb-8">
+                <div class="envelope bg-slate-100" id="envelope">
+                    <div class="flap bg-slate-200 border-b border-slate-300"></div>
+                    <!-- Letter Content -->
+                    <div class="letter flex items-center justify-center p-4 text-center border border-slate-200">
+                        <div
+                            class="border border-primary/30 h-full w-full flex flex-col items-center justify-center p-2 outline outline-1 outline-offset-4 outline-primary/10">
+                            <span class="text-primary/50 text-xs tracking-[0.3em] uppercase mb-2"
+                                id="introTitle">Invitación</span>
+                            <p class="font-script text-primary text-3xl" id="introName">Heidy Anahí</p>
+                            <p class="font-display text-xs uppercase tracking-widest mt-2 text-slate-500">XV Años</p>
+                        </div>
+                    </div>
+                    <button class="seal animate-pulse" onclick="openInvitation()">
+                        <span class="material-symbols-outlined text-white text-3xl">drafts</span>
+                    </button>
+                    <!-- Bottom fold decoration -->
+                    <div
+                        class="absolute bottom-0 left-0 w-0 h-0 border-l-[150px] border-l-transparent border-b-[100px] border-b-slate-200 border-r-[150px] border-r-transparent pointer-events-none z-20">
+                    </div>
+                </div>
+            </div>
+            <p class="text-white/90 font-display uppercase tracking-[0.4em] text-sm animate-pulse drop-shadow-lg">Toca
+                el sello para abrir</p>
+        </div>
+    </div>
+
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img alt="Beauty and the Beast dancing" class="w-full h-full object-cover blur-[2px] sepia-bg"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmae1XGUfJoiOMc9LiS6yVnHOSZ_Q9Ht_DDvCOKsLsNdF1tJnqOxfnAROWiD5U0xFYaihFrwz4dyQdm7nCScsSCTFvmHfgfpYi7Za8_4tJUJoL3ToMvWqLjdoFH7WlLEBKwKRb9YeVICSanzpDQ6eJEI0pHYzX26pqrAIigmkV3up8fL1ydoBcjEmuYj9sPbWbSQeH50iRCLyB9LbihPleUNGWOxyUndkCBrvNFOgBAFe4MdsFuF9zrnwOnRoHikeZt6eH74N_YMw" />
+            <div class="absolute inset-0 hero-overlay"></div>
+        </div>
+        <div class="relative z-10 container mx-auto px-6 text-center py-12">
+            <div class="mb-10 animate-float">
+                <span
+                    class="text-gold-accent font-display text-base md:text-xl tracking-[0.4em] uppercase block mb-6 sparkle-text">Te
+                    Invitamos a los</span>
+                <h1 class="font-display text-5xl md:text-8xl text-white mb-4 drop-shadow-2xl" id="heroMainTitle">XV Años
+                </h1>
+                <h2 class="font-script text-6xl md:text-8xl text-primary drop-shadow-lg" id="heroName">Heidy Anahí</h2>
+                <p class="font-display text-lg md:text-2xl text-white/90 tracking-[0.2em] mt-4 uppercase"
+                    id="heroLastName">López Guzmán</p>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-3 md:gap-6 mb-12" id="countdown">
+                <div
+                    class="glass-card p-4 md:p-6 rounded-2xl min-w-[75px] md:min-w-[110px] shadow-xl border-primary/40">
+                    <span class="block text-3xl md:text-5xl font-display text-primary sparkle-text" id="days">00</span>
+                    <span class="text-[10px] md:text-xs uppercase tracking-widest text-white/70">Días</span>
+                </div>
+                <div
+                    class="glass-card p-4 md:p-6 rounded-2xl min-w-[75px] md:min-w-[110px] shadow-xl border-primary/40">
+                    <span class="block text-3xl md:text-5xl font-display text-primary sparkle-text" id="hours">00</span>
+                    <span class="text-[10px] md:text-xs uppercase tracking-widest text-white/70">Horas</span>
+                </div>
+                <div
+                    class="glass-card p-4 md:p-6 rounded-2xl min-w-[75px] md:min-w-[110px] shadow-xl border-primary/40">
+                    <span class="block text-3xl md:text-5xl font-display text-primary sparkle-text"
+                        id="minutes">00</span>
+                    <span class="text-[10px] md:text-xs uppercase tracking-widest text-white/70">Minutos</span>
+                </div>
+                <div
+                    class="glass-card p-4 md:p-6 rounded-2xl min-w-[75px] md:min-w-[110px] shadow-xl border-primary/40">
+                    <span class="block text-3xl md:text-5xl font-display text-primary sparkle-text"
+                        id="seconds">00</span>
+                    <span class="text-[10px] md:text-xs uppercase tracking-widest text-white/70">Segundos</span>
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-center items-center gap-4">
+                <a class="w-full md:w-auto bg-primary hover:bg-yellow-600 text-white px-10 py-4 rounded-full font-semibold transition-all shadow-[0_10px_20px_rgba(180,148,74,0.3)] hover:scale-105"
+                    href="#rsvp">
+                    Confirmar Asistencia
+                </a>
+                <button onclick="addToCalendar()"
+                    class="w-full md:w-auto bg-white/10 hover:bg-white/20 text-white border border-white/30 backdrop-blur-md px-10 py-4 rounded-full font-semibold transition-all">
+                    Añadir al Calendario
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Added 'light-section' class to force dark text in glass cards -->
+    <section class="py-24 bg-background-light dark:bg-background-dark light-section">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center max-w-5xl mx-auto">
+                <div class="glass-card p-10 rounded-3xl border border-primary/20 shadow-sm">
+                    <span class="material-symbols-outlined text-primary text-5xl mb-6">calendar_month</span>
+                    <h3 class="font-display text-xl mb-3 text-royal dark:text-primary uppercase tracking-widest">
+                        ¿Cuándo?</h3>
+                    <p class="font-serif italic text-3xl mb-1 text-slate-700" id="eventDateFormatted">Loading...</p>
+                    <p class="text-sm font-sans tracking-widest uppercase opacity-60 text-slate-600" id="eventTime">
+                        Loading...</p>
+                </div>
+                <div class="glass-card p-10 rounded-3xl border border-primary/20 shadow-sm">
+                    <span class="material-symbols-outlined text-primary text-5xl mb-6">apparel</span>
+                    <h3 class="font-display text-xl mb-3 text-royal dark:text-primary uppercase tracking-widest">
+                        Vestimenta</h3>
+                    <p class="font-serif text-3xl mb-1 text-slate-700" id="dressCode">Formal</p>
+                    <p class="text-sm font-sans tracking-widest uppercase opacity-60 text-slate-600">Traje y Vestido de
+                        Gala</p>
+                </div>
+                <div class="glass-card p-10 rounded-3xl border border-primary/20 shadow-sm">
+                    <span
+                        class="material-symbols-outlined text-primary text-5xl mb-6">featured_seasonal_and_gifts</span>
+                    <h3 class="font-display text-xl mb-3 text-royal dark:text-primary uppercase tracking-widest"
+                        id="giftTitle">Regalo</h3>
+                    <p class="font-serif text-xl italic mb-2 text-slate-700" id="giftType">Lluvia de Sobres</p>
+                    <p class="text-sm font-sans opacity-60 text-slate-600 px-4" id="giftMessage">Tu presencia es mi
+                        mejor regalo...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 bg-royal text-white relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10 pointer-events-none">
+            <img alt="floral pattern" class="w-full h-full object-cover"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5RVs00Rk7XH6dZ2A74vGPqbXybbeQGSx56epGo1Zg-_CNnbOQFMmWZNrqHxyISRvUWejtmVz3haEBWSDljCVfKeJz0eMl38l1xpKlWlmVAQ16fzOgfKe0rV3hcG23d-wCxbtbFy_rHjiEoEFNegSjEVoVceajTpDau0PcUjge2qowUXqYuC47SFjZ3PbJp3FxVeoLMyTOD0YDAYm2V84i1Z0TkxM0unNngwB4Gr0tBMvOp5gkR_SKSUtNU6LeWm1sPrVKFXfWJss" />
+        </div>
+        <div class="container mx-auto px-6 relative z-10">
+            <h2 class="font-display text-4xl text-center mb-16 text-primary sparkle-text">Ubicaciones</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                <div
+                    class="bg-white/5 border border-primary/30 p-10 rounded-3xl flex flex-col items-center text-center hover:bg-white/10 transition-colors">
+                    <div
+                        class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-6 ring-1 ring-primary/40">
+                        <span class="material-symbols-outlined text-primary text-4xl">church</span>
+                    </div>
+                    <h3 class="font-display text-2xl mb-4 tracking-wide" id="massTitle">Misa de Acción de Gracias</h3>
+                    <p class="font-serif italic text-xl mb-2 text-primary" id="massLocation">Iglesia San Judas Tadeo</p>
+                    <p class="opacity-70 mb-10 max-w-[250px]" id="massAddress">Calle Principal #123</p>
+                    <a class="mt-auto inline-flex items-center gap-3 border border-primary/50 text-primary hover:bg-primary hover:text-white px-8 py-3 rounded-full transition-all group"
+                        href="#" target="_blank" id="massMapLink">
+                        <span class="material-symbols-outlined text-xl group-hover:animate-pulse">location_on</span> Ver
+                        en Google Maps
+                    </a>
+                </div>
+                <div
+                    class="bg-white/5 border border-primary/30 p-10 rounded-3xl flex flex-col items-center text-center hover:bg-white/10 transition-colors">
+                    <div
+                        class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-6 ring-1 ring-primary/40">
+                        <span class="material-symbols-outlined text-primary text-4xl">restaurant</span>
+                    </div>
+                    <h3 class="font-display text-2xl mb-4 tracking-wide" id="receptionTitle">Recepción</h3>
+                    <p class="font-serif italic text-xl mb-2 text-primary" id="receptionLocation">Quinta La Lupita</p>
+                    <p class="opacity-70 mb-10 max-w-[250px]" id="receptionAddress">Av. de las Rosas #456</p>
+                    <a class="mt-auto inline-flex items-center gap-3 border border-primary/50 text-primary hover:bg-primary hover:text-white px-8 py-3 rounded-full transition-all group"
+                        href="#" target="_blank" id="receptionMapLink">
+                        <span class="material-symbols-outlined text-xl group-hover:animate-pulse">location_on</span> Ver
+                        en Google Maps
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RSVP Section with improved light mode support -->
+    <section class="py-24 bg-background-light dark:bg-background-dark light-section" id="rsvp">
+        <div class="container mx-auto px-6">
+            <div class="max-w-xl mx-auto glass-card p-8 md:p-12 rounded-3xl shadow-2xl relative">
+                <div
+                    class="absolute -top-6 left-1/2 -translate-x-1/2 bg-primary w-12 h-12 rounded-full flex items-center justify-center text-white shadow-lg">
+                    <span class="material-symbols-outlined">send</span>
+                </div>
+                <div class="text-center mb-12">
+                    <h2 class="font-display text-3xl mb-4 text-royal dark:text-primary tracking-widest">Confirmar
+                        Asistencia</h2>
+                    <div class="h-1 w-20 bg-primary/30 mx-auto mb-4"></div>
+                    <p class="italic font-serif text-lg opacity-80 text-slate-600 dark:text-slate-300">Por favor,
+                        confírmanos tu asistencia antes del 31 de Marzo.</p>
+                </div>
+                <form class="space-y-8" id="rsvpForm">
+                    <div class="space-y-6">
+                        <div class="space-y-2">
+                            <label
+                                class="text-xs font-semibold tracking-[0.2em] uppercase opacity-60 ml-1 text-slate-800 dark:text-white/60">Nombre
+                                Completo</label>
+                            <input name="name"
+                                class="w-full bg-white dark:bg-white/10 border border-primary/30 rounded-xl p-4 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-slate-400 text-slate-800 dark:text-white"
+                                placeholder="Ej. Familia López" required="" type="text" />
+                        </div>
+                        <div class="space-y-2">
+                            <label
+                                class="text-xs font-semibold tracking-[0.2em] uppercase opacity-60 ml-1 text-slate-800 dark:text-white/60">Número
+                                de Invitados</label>
+                            <select name="guests"
+                                class="w-full bg-white dark:bg-white/10 border border-primary/30 rounded-xl p-4 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all appearance-none cursor-pointer text-slate-800 dark:text-white">
+                                <option value="1">1 Persona</option>
+                                <option value="2">2 Personas</option>
+                                <option value="3">3 Personas</option>
+                                <option value="4">Familia (4+)</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label
+                                class="text-xs font-semibold tracking-[0.2em] uppercase opacity-60 ml-1 text-slate-800 dark:text-white/60">Mensaje
+                                Especial</label>
+                            <textarea name="message"
+                                class="w-full bg-white dark:bg-white/10 border border-primary/30 rounded-xl p-4 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-slate-400 text-slate-800 dark:text-white"
+                                placeholder="Déjale un mensaje a Heidy..." rows="4"></textarea>
+                        </div>
+                    </div>
+                    <button
+                        class="w-full bg-royal dark:bg-primary text-white py-5 rounded-2xl font-display text-xl hover:scale-[1.03] active:scale-95 transition-all shadow-lg"
+                        type="submit">
+                        Enviar Confirmación
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-16 text-center bg-white dark:bg-background-dark border-t border-primary/10">
+        <div class="container mx-auto px-6">
+            <h3 class="font-script text-5xl text-primary mb-6" id="footerName">Heidy Anahí</h3>
+            <p class="text-xs font-sans tracking-[0.4em] uppercase text-slate-400 max-w-xs mx-auto leading-loose">
+                Gracias por ser parte de este cuento de hadas</p>
+            <div class="mt-12 flex justify-center gap-4 opacity-30">
+                <span class="material-symbols-outlined text-primary">auto_awesome</span>
+                <span class="material-symbols-outlined text-primary">favorite</span>
+                <span class="material-symbols-outlined text-primary">auto_awesome</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let globalConfig = {};
+
+        async function loadConfig() {
+            try {
+                const res = await fetch('/api/config');
+                if (res.ok) {
+                    globalConfig = await res.json();
+                    applyConfig(globalConfig);
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function applyConfig(config) {
+            document.getElementById('heroMainTitle').innerText = config.mainTitle || "XV Años";
+            document.getElementById('heroName').innerText = config.name || "Heidy Anahí";
+            document.getElementById('heroLastName').innerText = config.lastName || "López Guzmán";
+
+            if (document.getElementById('introName')) {
+                document.getElementById('introName').innerText = config.name || "Heidy Anahí";
+            }
+            if (document.getElementById('introTitle')) {
+                document.getElementById('introTitle').innerText = config.mainTitle || "Invitación"; // defaulting to Invitacion or Config Title
+            }
+
+            const dateStr = config.date || '2026-04-11';
+            const timeStr = config.time || '17:00';
+            const eventDate = new Date(dateStr + 'T' + timeStr);
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            let dateFormatted = eventDate.toLocaleDateString('es-ES', options);
+
+            document.getElementById('eventDateFormatted').innerText = new Date(dateStr).getDate() + ' de ' + new Date(dateStr).toLocaleString('es-ES', { month: 'long' });
+            document.getElementById('eventTime').innerText = dateFormatted.charAt(0).toUpperCase() + dateFormatted.slice(1);
+
+            document.getElementById('dressCode').innerText = config.dressCode || "Formal";
+            document.getElementById('giftTitle').innerText = config.giftTitle || "Regalo";
+            document.getElementById('giftType').innerText = config.giftType || "Lluvia de Sobres";
+            document.getElementById('giftMessage').innerText = config.giftMessage || "";
+
+            document.getElementById('massTitle').innerText = config.massTitle || "Misa";
+            document.getElementById('massLocation').innerText = config.massLocation || "";
+            document.getElementById('massAddress').innerText = config.massAddress || "";
+            document.getElementById('massMapLink').href = config.massMapLink || "#";
+
+            document.getElementById('receptionTitle').innerText = config.receptionTitle || "Recepción";
+            document.getElementById('receptionLocation').innerText = config.receptionLocation || "";
+            document.getElementById('receptionAddress').innerText = config.receptionAddress || "";
+            document.getElementById('receptionMapLink').href = config.receptionMapLink || "#";
+
+            document.getElementById('footerName').innerText = config.name || "Heidy Anahí";
+
+            startCountdown(dateStr + 'T' + timeStr);
+        }
+
+        function startCountdown(dateString) {
+            const targetDate = new Date(dateString).getTime();
+
+            const updateCountdown = () => {
+                const now = new Date().getTime();
+                const distance = targetDate - now;
+
+                if (distance < 0) {
+                    document.getElementById("countdown").innerHTML = "<div class='text-primary font-display text-4xl sparkle-text uppercase tracking-widest'>¡Hoy es el gran día!</div>";
+                    return;
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                if (document.getElementById("days")) {
+                    document.getElementById("days").innerText = days.toString().padStart(2, '0');
+                    document.getElementById("hours").innerText = hours.toString().padStart(2, '0');
+                    document.getElementById("minutes").innerText = minutes.toString().padStart(2, '0');
+                    document.getElementById("seconds").innerText = seconds.toString().padStart(2, '0');
+                }
+            };
+
+            setInterval(updateCountdown, 1000);
+            updateCountdown();
+        }
+
+        function addToCalendar() {
+            if (!globalConfig.eventTitle) return;
+
+            const title = globalConfig.eventTitle || "XV Años";
+            const details = `${globalConfig.massTitle || 'Misa'} en ${globalConfig.massLocation || ''}. ${globalConfig.receptionTitle || 'Recepción'} en ${globalConfig.receptionLocation || ''}.`;
+            const location = globalConfig.receptionLocation || "";
+            const dateStr = globalConfig.date || '2026-04-11';
+            const timeStr = globalConfig.time || '17:00';
+
+            const startDate = dateStr.replace(/-/g, '') + 'T' + timeStr.replace(/:/g, '') + '00';
+            const endDateTime = new Date(new Date(dateStr + 'T' + timeStr).getTime() + 8 * 60 * 60 * 1000);
+            const endDate = endDateTime.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+
+            const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${startDate}/${endDate}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(location)}`;
+            window.open(url, '_blank');
+        }
+
+        document.getElementById('rsvpForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = {
+                id: crypto.randomUUID(),
+                name: formData.get('name'),
+                guests: formData.get('guests'),
+                message: formData.get('message'),
+                timestamp: new Date().toISOString()
+            };
+
+            try {
+                const btn = e.target.querySelector('button');
+                const originalText = btn.innerText;
+                btn.innerText = "Enviando...";
+                btn.disabled = true;
+
+                const res = await fetch('/api/rsvp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (res.ok) {
+                    alert('¡Confirmación enviada con éxito! Gracias por acompañarnos.');
+                    e.target.reset();
+                } else {
+                    alert('Hubo un error al enviar. Por favor intenta de nuevo.');
+                }
+                btn.innerText = originalText;
+                btn.disabled = false;
+            } catch (error) {
+                console.error(error);
+                alert('Error de conexión. Intenta más tarde.');
+                e.target.querySelector('button').disabled = false;
+            }
+        });
+
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+
+        function openInvitation() {
+            const envelope = document.getElementById('envelope');
+            const loader = document.getElementById('intro-loader');
+            const wrapper = document.getElementById('envelope-wrapper');
+            const video = document.getElementById('introVideo');
+            const body = document.getElementById('body-content');
+
+            // 1. Animation: Open Envelope & Hide Wrapper
+            envelope.classList.add('open');
+            wrapper.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+
+            // 2. Reveal and Play Video
+            video.classList.remove('opacity-0');
+            video.muted = false; // Try unmuted
+            video.play().catch(e => {
+                console.warn("Auto-play blocked/failed, trying muted", e);
+                video.muted = true;
+                video.play();
+            });
+
+            // 3. On Video End -> Fade out everything
+            video.onended = () => {
+                loader.classList.add('opacity-0', 'pointer-events-none');
+                body.classList.remove('overflow-hidden');
+                setTimeout(() => { loader.remove(); }, 1000); // Clean up DOM
+            };
+        }
+
+        loadConfig();
+    </script>
+</body>
+
+</html>
